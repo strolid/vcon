@@ -10,15 +10,15 @@ logger = init_logger(__name__)
 
 def test_get_docs():
     logger.debug("Starting test_get_docs")
-    with fastapi.testclient.TestClient(conserver.app) as client:
-        print("{} client type: {}".format(__name__, type(client)))
-        response = client.get("/docs")
-        assert response.status_code == 200
+    client = fastapi.testclient.TestClient(conserver.app)
+    print("{} client type: {}".format(__name__, type(client)))
+    response = client.get("/docs")
+    assert response.status_code == 200
 
-        if response.status_code != 200:
-            pytest.exit(
-                "Basic conserver FastApi framework not working.  Aborting all tests."
-            )
+    if response.status_code != 200:
+        pytest.exit(
+            "Basic conserver FastApi framework not working.  Aborting all tests."
+        )
 
     try:
         asyncio.all_tasks()

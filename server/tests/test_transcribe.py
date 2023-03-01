@@ -5,7 +5,7 @@ import asyncio
 
 import vcon
 import conserver
-import lifecycle
+import lifecycle_helpers
 import redis_mgr
 import conserver_test
 
@@ -23,8 +23,8 @@ def delete_test_vcon():
 def setup_teardown():
     # Before test
     redis_mgr.create_pool()
-    lifecycle.task_monitor.show_running_tasks()
-    lifecycle.task_monitor.schedule()
+    lifecycle_helpers.task_monitor.show_running_tasks()
+    lifecycle_helpers.task_monitor.schedule()
 
     dialog_count = 0
     # get_response = client.get("/vcon/{}".format(conserver_test.UUID), headers={ "accept" : "application/json"})
@@ -64,8 +64,8 @@ def setup_teardown():
     # else:
     #  dialog_count = 0
     redis_mgr.shutdown_pool()
-    lifecycle.task_monitor.stop()
-    lifecycle.task_monitor.show_running_tasks()
+    lifecycle_helpers.task_monitor.stop()
+    lifecycle_helpers.task_monitor.show_running_tasks()
     print("done dialogs: {} (should be 0)".format(dialog_count))
     # delete_test_vcon()
 
