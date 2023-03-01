@@ -41,9 +41,20 @@ async def start(opts=default_options):
                     inbound_vcon = await r.json().get(
                         f"vcon:{str(vcon_uuid)}", Path.root_path()
                     )
-                    results = m.conserver.vcons.insert_one(
-                        prepare_vcon_for_mongo(inbound_vcon)
+
+                    prepped_vcon = prepare_vcon_for_mongo(inbound_vcon)
+                    results = m.conserver.vcons.replace_one(
+                        {"_id": prepped_vcon["_id"]}, prepped_vcon, upsert=True
                     )
+
+                    if results.upserted_id:
+                        logger.info(
+                            f"mongo storage plugin: inserted vCon: {vcon_uuid}, results: {results} "
+                        )
+                    else:
+                        logger.info(
+                            f"mongo storage plugin: updated vCon: {vcon_uuid}, results: {results} "
+                        )
 
                     logger.info(
                         f"mongo storage plugin: inserted vCon: {vcon_uuid}, results: {results} "

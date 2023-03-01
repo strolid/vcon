@@ -1,12 +1,13 @@
 version: "3.3"
 services:
   conserver:
+    image: conserver
     build: .
     command: bash -c "python ./init.py"
     volumes:
       - .:/app
     ports:
-      - "8000:8000"
+      - "8050:8000"
     depends_on:
       - redis
     env_file:
@@ -49,7 +50,7 @@ services:
       - dev
 
   jupyter:
-    build: .
+    image: conserver
     command: jupyter notebook --ip=0.0.0.0 --port=9999 --no-browser --allow-root
     volumes:
       - .:/app

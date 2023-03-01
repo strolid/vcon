@@ -56,7 +56,7 @@ async def load_adaptors():
     logger.info("Starting load_adaptors")
     print("Load adaptors")
     if redis_mgr.REDIS_POOL is None:
-        logger.error("redis pool not initialized in load_services")
+        logger.error("redis pool not initialized in load_adaptors")
         redis_mgr.create_pool()
     r = redis_mgr.get_client()
     adapter_processes = []
