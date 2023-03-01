@@ -56,9 +56,6 @@ async def start(opts=default_options):
                             f"mongo storage plugin: updated vCon: {vcon_uuid}, results: {results} "
                         )
 
-                    logger.info(
-                        f"mongo storage plugin: inserted vCon: {vcon_uuid}, results: {results} "
-                    )
                     for topic in opts["egress-topics"]:
                         await r.publish(topic, vcon_uuid)
                 await asyncio.sleep(0.1)

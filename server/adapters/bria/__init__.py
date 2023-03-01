@@ -368,6 +368,7 @@ async def get_same_leg_or_new_vcon(r, body, vcon_redis) -> vcon.Vcon:
     Returns:
         vcon.Vcon: New or existing vcon
     """
+    direction = body.get("direction")
     redis_key = call_leg_detection_key(body)
     logger.info("computed_redis_key is %s", redis_key)
     vcon_id = await r.get(redis_key)
@@ -380,7 +381,8 @@ async def get_same_leg_or_new_vcon(r, body, vcon_redis) -> vcon.Vcon:
     if not v_con:
         v_con = vcon.Vcon()
         v_con.set_uuid("strolid.com")
-        await r.set(redis_key, v_con.uuid)
+        if direction == "in":
+            await r.set(redis_key, v_con.uuid)
         logger.info(f"Key NOT found {redis_key}- Created a new vcon")
 
     logger.info(f"The vcon id is {v_con.uuid}")
