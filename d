@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ "$1" == "start" ]; then
-  sudo docker-compose --profile dev up -d
+  sudo docker-compose --profile dev up 
 elif [ "$1" == "bash" ]; then
   sudo docker-compose exec conserver bash
 elif [ "$1" == "restart" ]; then
