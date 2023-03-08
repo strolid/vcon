@@ -9,9 +9,16 @@ import pkgutil
 import typing
 import sys
 
+
+def custom_json_encoder(obj):
+  if isinstance(obj,datetime.datetime):
+    return obj.isoformat()
+  raise TypeError(repr(obj) + " is not JSON serializable")
+
+
 try:
   import simplejson as json
-  dumps_options = {"ignore_nan" : True}
+  dumps_options = {"ignore_nan" : True, "default":custom_json_encoder}
   print("using simplejson")
 except Exception as import_error:
   import json

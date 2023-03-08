@@ -44,6 +44,7 @@ class CallLogs(BaseModel):
     cdr_json = BinaryJSONField(null=True)
     dialog_json = BinaryJSONField(null=True)
     source = CharField(null=True)
+    lead_id = CharField(null=True)
 
     class Meta:
         table_name = "call_logs"

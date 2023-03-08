@@ -22,7 +22,7 @@ model = whisper.load_model("base")
 
 default_options = {
     "name": "call_log",
-    "ingress-topics": ["ingress-vcons"],
+    "ingress-topics": [],
     "transcribe": True,
     "min_transcription_length": 10,
     "deepgram": False,
@@ -72,6 +72,7 @@ def get_projection(vCon):
     projection["modified_on"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
     projection["call_started_on"] = vCon.attachments[0]["payload"]["startedAt"]
     projection["id"] = vCon.uuid
+    projection["lead_id"] = get_lead_id(vCon.attachments)
     projection["dialog"] = compute_dialog_projection(vCon.dialog)
     add_agent_extension_to_dialog(vCon, projection["dialog"])
 
@@ -88,6 +89,12 @@ def get_projection(vCon):
             projection["dealer_cached_details"] = {"name": dealer_name}
     # vCon.attachments.append(projection)
     return projection
+
+
+def get_lead_id(attachments):
+    for attachment in attachments:
+        if attachment.get("lead"):
+            return attachment["lead"]["id"]
 
 
 def calculate_duration(dialog):

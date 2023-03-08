@@ -68,6 +68,7 @@ async def start(opts=None):
                         # json_version = CharField(null=True),
                         # cdr_json = BinaryJSONField(null=True),
                         source="bria",
+                        lead_id=projection.get("lead_id"),
                     ).on_conflict(
                         action="update",
                         preserve=[
