@@ -8,10 +8,8 @@ from settings import REDIS_URL
 from server.lib.vcon_redis import VconRedis
 from .models import ShelbyLead
 import copy
-import os
 
 logger = init_logger(__name__)
-cxm_base_url = os.environ["STROLID_CXM_BASE_URL"]
 
 default_options = {
     "name": "postgres",
