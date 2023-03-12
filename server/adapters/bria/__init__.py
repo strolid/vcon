@@ -11,10 +11,10 @@ import jwt
 import redis.asyncio as redis
 import requests
 import sentry_sdk
+from lib.sentry import init_sentry
 from lib.listen_list import listen_list
 from lib.logging_utils import init_logger
 from lib.phone_number_utils import get_e164_number
-from lib.sentry import init_sentry
 from settings import (
     AWS_KEY_ID,
     AWS_SECRET_KEY,

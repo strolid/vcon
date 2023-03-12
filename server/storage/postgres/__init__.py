@@ -4,12 +4,14 @@ import traceback
 import copy
 import redis.asyncio as redis
 from lib.logging_utils import init_logger
-from lib.sentry import init_sentry
 from settings import REDIS_URL
 
 from server.lib.vcon_redis import VconRedis
 
-from .models import CallLogs
+from .models import CallLogs, database
+
+import sentry_sdk
+from lib.sentry import init_sentry
 
 init_sentry()
 
@@ -47,6 +49,7 @@ async def start(opts=None):
                         projection = attachment
                         break
                 if projection:
+                    database.connect(reuse_if_open=True)
                     CallLogs.insert(
                         id=projection.get("id"),
                         agent_extension=projection.get("extension"),
@@ -90,10 +93,16 @@ async def start(opts=None):
                     for topic in opts["egress-topics"]:
                         await r.publish(topic, vConUuid)
 
+                    if not database.is_closed():
+                        database.close()
+
         except asyncio.CancelledError:
             logger.debug("posgres plugin Cancelled")
             break
-        except Exception:
+        except Exception as e:
             logger.error("posgres plugin: error: \n%s", traceback.format_exc())
-            logger.error("Shoot!")
+            sentry_sdk.capture_exception(e)
+        finally:
+            if not database.is_closed():
+                database.close()
     logger.info("posgres plugin stopped")

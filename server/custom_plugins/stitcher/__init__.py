@@ -6,8 +6,15 @@ import redis.asyncio as redis
 from lib.logging_utils import init_logger
 from settings import REDIS_URL
 from server.lib.vcon_redis import VconRedis
-from .models import ShelbyLead
+from .models import ShelbyLead, database
 import copy
+
+
+import sentry_sdk
+from lib.sentry import init_sentry
+
+init_sentry()
+
 
 logger = init_logger(__name__)
 
@@ -93,13 +100,20 @@ async def start(opts=None):
             async for message in p.listen():
                 vConUuid = message["data"]
                 logger.info("stitcher plugin: received vCon: %s", vConUuid)
+                database.connect(reuse_if_open=True)
                 await run(vConUuid)
                 for topic in opts["egress-topics"]:
                     await r.publish(topic, vConUuid)
+                if not database.is_closed():
+                    database.close()
 
         except asyncio.CancelledError:
             logger.debug("stitcher plugin Cancelled")
             break
-        except Exception:
+        except Exception as e:
             logger.error("stitcher plugin: error: \n%s", traceback.format_exc())
+            sentry_sdk.capture_exception(e)
+        finally:
+            if not database.is_closed():
+                database.close()
     logger.info("stitcher plugin stopped")
