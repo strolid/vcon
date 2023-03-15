@@ -73,9 +73,11 @@ async def run(vConUuid):
             ShelbyLead.created_on > lead_not_before,
         )
 
-        dealer_id = inbound_vcon.attachments[0].get("dealer", {}).get("id")
-        if dealer_id:
-            lead_query = lead_query.where(ShelbyLead.dealer_id == dealer_id)
+        dealer = inbound_vcon.attachments[0].get("dealer")
+        if dealer:
+            dealer_id = dealer.get("id")
+            if dealer_id:
+                lead_query = lead_query.where(ShelbyLead.dealer_id == dealer_id)
 
         lead = lead_query.order_by(ShelbyLead.created_on.desc()).first()
 
