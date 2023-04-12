@@ -58,14 +58,12 @@ def fetch_dealers_data_from_graphql():
 
     query = """{
     dealers {
-        results {
         id
         name
         outboundPhoneNumber
         team {
             id
             name
-        }
         }
     }
     }"""
@@ -75,7 +73,7 @@ def fetch_dealers_data_from_graphql():
 
     dealers_data = {
         str(dealer_data["id"]): dealer_data
-        for dealer_data in response.json()["data"]["dealers"]["results"]
+        for dealer_data in response.json()["data"]["dealers"]
     }
 
     return dealers_data
