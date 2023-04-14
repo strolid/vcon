@@ -89,7 +89,9 @@ async def run(vConUuid):
         await vcon_redis.store_vcon(inbound_vcon)
 
     except Exception:
-        logger.error("stitcher plugin: error: \n%s", traceback.format_exc())
+        logger.error(
+            "stitcher plugin: error: \n%s", traceback.format_exc(), exc_info=True
+        )
 
 
 async def start(opts=None):
@@ -113,7 +115,9 @@ async def start(opts=None):
             logger.debug("stitcher plugin Cancelled")
             break
         except Exception as e:
-            logger.error("stitcher plugin: error: \n%s", traceback.format_exc())
+            logger.error(
+                "stitcher plugin: error: \n%s", traceback.format_exc(), exc_info=True
+            )
             sentry_sdk.capture_exception(e)
         finally:
             if not database.is_closed():

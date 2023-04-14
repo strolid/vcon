@@ -68,7 +68,10 @@ def fetch_dealers_data_from_graphql():
     }
     }"""
 
-    headers = {"Authorization": f"Bearer {jwt_token}"}
+    headers = {
+        "Authorization": f"Bearer {jwt_token}",
+        "X-Client": "conserver:briaAdaptor",
+    }
     response = requests.post(GRAPHQL_URL, headers=headers, json={"query": query})
 
     dealers_data = {
