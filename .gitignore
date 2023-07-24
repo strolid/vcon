@@ -18,3 +18,4 @@ dump.rdb
 server/static
 .data
 tmp
+server/tasks.csv
