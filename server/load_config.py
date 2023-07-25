@@ -5,6 +5,7 @@ from redis_mgr import get_key, set_key
 import importlib
 import yaml
 from lib.logging_utils import init_logger
+import datetime
 
 logger = init_logger(__name__)
 logger.info("Conserver starting up")
@@ -59,6 +60,12 @@ async def load_config():
         module_name = adapter['module']
         importlib.import_module(module_name)
 
+    # Push this configuration on to the config list
+    await set_key("current_configuration", config)
+
+    # Set the last start key with the current timestamp
+    current_iso_timestamp = datetime.datetime.isoformat(datetime.datetime.now())
+    await set_key("start_time", current_iso_timestamp)
     logger.debug("Configuration loaded")
     return chain_names
 
